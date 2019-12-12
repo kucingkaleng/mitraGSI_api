@@ -1,0 +1,8 @@
+{
+  "sellerUser": [
+    "distributor", "agen", "reseller"
+  ],
+  "adminUser": [
+    "admin"
+  ]
+}
