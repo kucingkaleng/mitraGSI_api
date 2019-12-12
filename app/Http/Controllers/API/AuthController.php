@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use JWTAuth;
 use App\Transformers\AuthTransformer;
 use App\User;
+use App\UserData;
 
 class AuthController extends Controller
 {
@@ -47,8 +48,12 @@ class AuthController extends Controller
 
   // Register
   public function register (Request $req) {
-    User::create($req->all());
-
+    $user = User::create($req->all());
+    UserData::create([
+      'user_id' => $user->id,
+      'name' => \ucfirst($user->username),
+      'city' => 'sidoarjo'
+    ]);
     return response()->json(['status' => 'ok']);
   }
 

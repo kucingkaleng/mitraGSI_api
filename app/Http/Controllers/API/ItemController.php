@@ -55,17 +55,17 @@ class ItemController extends Controller
     if (!RXA::empty($par['userid'])) {
       $items = Item::whereHas('stocks', function ($query) use ($par) {
         $query->where('user_id', $par['userid']);
-      })->get();
+      })->orderBy('desc')->get();
       $items->load('stocks');
       return $items;
     }
 
     if (!RXA::empty($par['stock'])) {
-      $items = $model->with('stocks')->get();
+      $items = $model->with('stocks')->orderBy('desc')->get();
       return response($items);
     }
 
-    $items = $model->all();
+    $items = $model->orderByDesc('created_at')->get();
     return response($items);
   }
 
