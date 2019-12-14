@@ -11,12 +11,13 @@ use Image;
 use App\Item;
 use App\ItemStock;
 use App\User;
+use App\Http\Controllers\API\Queries\ItemQuery;
 
 class ItemController extends Controller
 {
   function __construct () {
     $this->config = RXA::loadJson(database_path('config.json'));
-    $this->par = ['userid' => null, 'stock' => false];
+    $this->par = ['userid' => null, 'stock' => false, 'limit' => 4, 'page' => 1, 'perpage' => 4, 'pagination' => false];
   }
 
   public function get (Item $item, Request $req) {
@@ -24,6 +25,8 @@ class ItemController extends Controller
     $userid = $req->get('userid');
     $stock = $req->get('stock');
     $limit = $req->get('limit');
+    $page = $req->get('page');
+    $perpage = $req->get('perpage');
 
     // Init param
     if (!RXA::empty($userid)) {
@@ -33,8 +36,12 @@ class ItemController extends Controller
       }
     }
 
-    if (!RXA::empty($stock)) {
-      $this->par['stock'] = $stock;
+    if (!RXA::empty($stock)) { $this->par['stock'] = $stock; }
+    if (!RXA::empty($limit)) { $this->par['limit'] = $limit; }
+    if (!RXA::empty($page) && !RXA::empty($perpage)) {
+      $this->par['pagination'] = true;
+      $this->par['page'] = $page;
+      $this->par['perpage'] = $perpage;
     }
     // End init param
 
@@ -51,21 +58,31 @@ class ItemController extends Controller
 
   protected function _getAll ($model) {
     $par = $this->par;
+    $query = new ItemQuery;
 
     if (!RXA::empty($par['userid'])) {
-      $items = Item::whereHas('stocks', function ($query) use ($par) {
-        $query->where('user_id', $par['userid']);
-      })->orderBy('desc')->get();
-      $items->load('stocks');
+      $items = $query->getAllByUserId($par['userid'],$par['limit']);
       return $items;
     }
 
     if (!RXA::empty($par['stock'])) {
-      $items = $model->with('stocks')->orderBy('desc')->get();
+      if ($par['pagination']) {
+        $items = $query->getAllWithStockAndPaginate($par['page'], $par['perpage']);
+        if (count($items) < 1) { return response()->json(['error' => 'Nothing more'], 404); }
+        return response($items);
+      }
+
+      $items = $query->getAllWithStock($par['limit']);
       return response($items);
     }
 
-    $items = $model->orderByDesc('created_at')->get();
+    if ($par['pagination']) {
+      $items = $query->getAllAndPaginate($par['page'], $par['perpage']);
+      if (count($items) < 1) { return response()->json(['error' => 'Nothing more'], 404); }
+      return response($items);
+    }
+
+    $items = $query->getAll($par['limit']);
     return response($items);
   }
 
