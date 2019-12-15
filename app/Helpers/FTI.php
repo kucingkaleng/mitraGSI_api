@@ -51,4 +51,22 @@ class FTI {
 
     return $validator;
   }
+
+  public static function pageGenerator ($page, $perpage, $total) {
+    if (RXA::empty($page) || $page == 1) {
+      $prev = 0;
+    }
+    else {
+      $prev = $page-1;
+    }
+    $next = $page+1;
+    $pages = ceil($total/$perpage);
+
+    return (object) [
+      'page' => (int) $page,
+      'perpage' => (int) $perpage,
+      'total_page' => $pages,
+      'total_item' => $total
+    ];
+  }
 }

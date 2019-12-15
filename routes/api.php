@@ -17,7 +17,7 @@ Route::group([
   Route::get('item/get', 'ItemController@get');
   Route::post('item/store', 'ItemController@store');
 
+  Route::get('item/stock/get', 'ItemStockController@get');
   Route::post('item/stock/store/{userid}', 'ItemStockController@store')->middleware('jwt.verify');
-  Route::put('item/stock', 'ItemController@store');
 
 });
