@@ -52,7 +52,6 @@ class ItemStockQuery {
       'user:id,name'
     ])->where('id', $id)->first();
     return $item;
-    // commit
   }
 
   public static function getOneByUserId ($id, $userid) {

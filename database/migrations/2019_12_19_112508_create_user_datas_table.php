@@ -17,6 +17,10 @@ class CreateUserDatasTable extends Migration {
 			$table->integer('id', true)->nullable();
 			$table->integer('user_id');
 			$table->string('name');
+			$table->string('address')->nullable();
+			$table->string('city')->nullable();
+			$table->string('province')->nullable();
+			$table->string('photo')->nullable();
 		});
 	}
 
