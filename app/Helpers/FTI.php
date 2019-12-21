@@ -24,13 +24,13 @@ class FTI {
 
     $images = [];
     foreach ($requestInput as $x => $image) {
-      $imageName = $uploadPath.'\\'.FTI::defaultFileNaming(rand(10,9999)).$x.'.'.$image->getClientOriginalExtension();
+      $imageName = $uploadPath.'/'.FTI::defaultFileNaming(rand(10,9999)).$x.'.'.$image->getClientOriginalExtension();
       $img = Image::make($image->getPathname());
-      $img->save(public_path('uploads\\'.$imageName), 60);
+      $img->save(public_path('uploads/'.$imageName), 60);
       $images[] = $imageName;
     }
 
-    return implode(',',$images);
+    return json_encode($images);
   }
 
   public static function defaultFileNaming ($fileName = 'kucing', $offset = 5) {

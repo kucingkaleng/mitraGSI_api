@@ -111,8 +111,8 @@ class ItemController extends Controller
     $fti = new FTI;
 
     $path = date("DMjY");
-    if (!file_exists(public_path('uploads\\'.$path))) {
-      mkdir(public_path('uploads\\'.$path), 0755, true);
+    if (!file_exists(public_path('uploads/'.$path))) {
+      mkdir(public_path('uploads/'.$path), 0755, true);
     }
 
     $input['images'] = $fti->bulkUploadImage($req->images,'images',$path);
